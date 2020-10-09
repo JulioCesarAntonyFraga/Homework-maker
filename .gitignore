@@ -8,3 +8,4 @@ __pycache__
 # Build files
 pyoxidizer.bzl
 build
+dist
