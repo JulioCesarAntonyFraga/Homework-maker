@@ -1,0 +1,14 @@
+# Python trash
+__pycache__
+
+# IDE files
+.ideia
+.vscode
+
+# Build files
+pyoxidizer.bzl
+build
+dist
+
+# Others
+answers.txt
