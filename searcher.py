@@ -17,23 +17,13 @@ from tkinter import filedialog
 def UploadAction(event=None):
     filename = filedialog.askopenfilename()
 
-    questions = []
-    questions_form = []
-
-    f = open(f"{filename}", "r", encoding="utf-8")
+    questions = open(f"{filename}", "r", encoding="utf-8").readlines()
 
     final_document = open("answers.txt", "w+", encoding="utf-8")
 
-    for i, l in enumerate(f):
-        questions.append(l)
-
     for i in range(len(questions)):
-        q_form = questions[i].replace(f"{i + 1})", "")
-        questions_form.append(q_form)
 
-    for i in range(len(questions_form)):
-
-        url = f"https://www.google.com/search?q={urllib.parse.quote(questions_form[i])}"
+        url = f"https://www.google.com/search?q={urllib.parse.quote(questions[i])}"
         req = requests.get(url, headers)
         soup = BeautifulSoup(req.content, "html.parser")
 
@@ -43,14 +33,14 @@ def UploadAction(event=None):
 
             answer = soup.find(class_="BNeawe s3v9rd AP7Wnd")
 
-            final_document.write(f"{i + 1}){questions_form[i]}{answer.text}\n\n")
+            final_document.write(f"{i + 1}){questions[i]}{answer.text}\n\n")
 
         else:
 
             answer = soup.find(class_="BNeawe iBp4i AP7Wnd")
 
-            final_document.write(f"{i + 1}){questions_form[i]}{answer.text}\n\n")
-
+            final_document.write(f"{i + 1}) {questions[i]}{answer.text}\n\n")
+    
     done = Label(text="Arquivo gerado!")
     done.pack()
     final_document.close()

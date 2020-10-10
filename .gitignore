@@ -9,3 +9,6 @@ __pycache__
 pyoxidizer.bzl
 build
 dist
+
+# Others
+answers.txt
