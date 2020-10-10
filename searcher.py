@@ -1,3 +1,4 @@
+import urllib
 import requests
 from bs4 import BeautifulSoup
 
@@ -32,7 +33,7 @@ def UploadAction(event=None):
 
     for i in range(len(questions_form)):
 
-        url = f"https://www.google.com/search?q={questions_form[i].replace(' ', '%20')}"
+        url = f"https://www.google.com/search?q={urllib.parse.quote(questions_form[i])}"
         req = requests.get(url, headers)
         soup = BeautifulSoup(req.content, "html.parser")
 
