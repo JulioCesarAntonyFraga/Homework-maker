@@ -1,6 +1,7 @@
 import urllib
 import requests
 from bs4 import BeautifulSoup
+import re
 
 headers = {
     "Access-Control-Allow-Origin": "*",
@@ -13,6 +14,7 @@ headers = {
 from tkinter import *
 from tkinter import filedialog
 
+question_regex = r"(\s)*(\d)+(\s)*[(.)(\-)(\))]{1}(\s)*"
 
 def UploadAction(event=None):
     filename = filedialog.askopenfilename()
@@ -23,7 +25,9 @@ def UploadAction(event=None):
 
     for i in range(len(questions)):
 
-        url = f"https://www.google.com/search?q={urllib.parse.quote(questions[i])}"
+        question = re.sub(question_regex, "", questions[i], 1)
+
+        url = f"https://www.google.com/search?q={urllib.parse.quote(question)}"
         req = requests.get(url, headers)
         soup = BeautifulSoup(req.content, "html.parser")
 
@@ -33,13 +37,13 @@ def UploadAction(event=None):
 
             answer = soup.find(class_="BNeawe s3v9rd AP7Wnd")
 
-            final_document.write(f"{i + 1}){questions[i]}{answer.text}\n\n")
+            final_document.write(f"{questions[i]}{answer.text}\n\n")
 
         else:
 
             answer = soup.find(class_="BNeawe iBp4i AP7Wnd")
 
-            final_document.write(f"{i + 1}) {questions[i]}{answer.text}\n\n")
+            final_document.write(f"{questions[i]}{answer.text}\n\n")
     
     done = Label(text="Arquivo gerado!")
     done.pack()
