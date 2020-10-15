@@ -3,6 +3,7 @@ import urllib
 
 import requests
 from bs4 import BeautifulSoup
+import re
 
 headers = {
     "Access-Control-Allow-Origin": "*",
