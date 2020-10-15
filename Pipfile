@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 beautifulsoup4 = "*"
 requests = "*"
+lxml = "*"
+requests-html = "*"
 
 [requires]
 python_version = "3.8"

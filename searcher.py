@@ -1,7 +1,11 @@
 import urllib
-import requests
+from requests_html import HTMLSession
 from bs4 import BeautifulSoup
 import re
+import lxml
+
+from tkinter import *
+from tkinter import filedialog
 
 headers = {
     "Access-Control-Allow-Origin": "*",
@@ -11,8 +15,7 @@ headers = {
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0",
 }
 
-from tkinter import *
-from tkinter import filedialog
+session = HTMLSession()
 
 question_number_regex = r"(\s)*(\d)+(\s)*[(.)(\-)(\))]{1}(\s)*"
 
@@ -30,20 +33,24 @@ def UploadAction(event=None):
         question_formated = urllib.parse.quote(question)
 
         url = f"https://www.google.com/search?q={question_formated}"
-        req = requests.get(url, headers)
-        soup = BeautifulSoup(req.content, "html.parser")
+        req = session.get(url, headers=headers)
 
-        answer = soup.find(class_="BNeawe iBp4i AP7Wnd")
+        # For Javascript render
+        # req.html.render()
+
+        soup = BeautifulSoup(req.html.html, "lxml")
+
+        answer = soup.find(class_="QIclbb XpoqFe")
 
         if answer is not None:
 
-            output_file.write(f"{i + 1}) {question}{answer.text}\n\n")
+            output_file.write(f"{i + 1}) {question}\n{answer.text}\n\n")
 
         else:
 
-            answer = soup.find(class_="BNeawe s3v9rd AP7Wnd")
+            answer = soup.find("span", class_="aCOpRe").span
 
-            output_file.write(f"{i + 1}) {question}{answer.text}\n\n")
+            output_file.write(f"{i + 1}) {question}\n{answer.text}\n\n")
 
     done = Label(text="Arquivo gerado!")
     done.pack()
