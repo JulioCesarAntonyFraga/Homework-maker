@@ -1,6 +1,4 @@
-import re
 import urllib
-
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -24,7 +22,7 @@ def UploadAction(event=None):
 
     questions = open(f"{filename}", "r", encoding="utf-8").readlines()
 
-    final_document = open("answers.txt", "w+", encoding="utf-8")
+    output_file = open("answers.txt", "w+", encoding="utf-8")
 
     for i in range(len(questions)):
 
@@ -35,23 +33,21 @@ def UploadAction(event=None):
         req = requests.get(url, headers)
         soup = BeautifulSoup(req.content, "html.parser")
 
-        answer = str(soup.find(class_="BNeawe iBp4i AP7Wnd"))
+        answer = soup.find(class_="BNeawe iBp4i AP7Wnd")
 
-        if answer == "None":
+        if answer is not None:
 
-            answer = soup.find(class_="BNeawe s3v9rd AP7Wnd")
-
-            final_document.write(f"{i + 1}) {question}{answer.text}\n\n")
+            output_file.write(f"{i + 1}) {question}{answer.text}\n\n")
 
         else:
 
-            answer = soup.find(class_="BNeawe iBp4i AP7Wnd")
+            answer = soup.find(class_="BNeawe s3v9rd AP7Wnd")
 
-            final_document.write(f"{i + 1}) {question}{answer.text}\n\n")
+            output_file.write(f"{i + 1}) {question}{answer.text}\n\n")
 
     done = Label(text="Arquivo gerado!")
     done.pack()
-    final_document.close()
+    output_file.close()
 
 
 root = Tk()
@@ -75,12 +71,12 @@ img = PhotoImage(file="sample.png")
 make_label(frame, img)
 
 tuto = Label(
-    text="Lembre-se, as perguntas tem que estar num documento .txt e organizadas como na imagem acima, ou o programa pode não funcionar corretamente!"
+    text="Lembre-se, as perguntas tem que estar num documento .txt separadas por linha. Como no exemplo acima."
 )
 tuto.pack()
 
 button = Button(root, text="Abrir arquivo", command=UploadAction)
 button.pack()
 
-
-root.mainloop()
+if __name__ == "__main__":
+    root.mainloop()
