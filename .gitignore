@@ -10,5 +10,11 @@ pyoxidizer.bzl
 build
 dist
 
-# Others
+# Gitpod
+.theia
+
+# venv
+.venv
+
+# Output
 answers.txt
