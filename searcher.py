@@ -1,8 +1,9 @@
-import urllib
-from requests_html import HTMLSession
-from bs4 import BeautifulSoup
 import re
+import urllib
 import lxml
+import pandas as pd
+from bs4 import BeautifulSoup
+from requests_html import HTMLSession
 
 from tkinter import *
 from tkinter import filedialog
@@ -25,14 +26,17 @@ def UploadAction(event=None):
 
     questions = open(f"{filename}", "r", encoding="utf-8").readlines()
 
-    output_file = open("answers.txt", "w+", encoding="utf-8")
+    output = {"question": [], "answer": []}
 
-    for i in range(len(questions)):
+    for question in questions:
 
-        question = re.sub(question_number_regex, "", questions[i], 1)
-        question_formated = urllib.parse.quote(question)
+        question_without_number = re.sub(
+            question_number_regex, "", question.replace("\n", ""), 1
+        )
 
-        url = f"https://www.google.com/search?q={question_formated}"
+        output["questions"].append(question_without_number)
+
+        url = f"https://www.google.com/search?q={urllib.parse.quote(question_without_number)}"
         req = session.get(url, headers=headers)
 
         # For Javascript render
@@ -42,19 +46,17 @@ def UploadAction(event=None):
 
         answer = soup.find(class_="QIclbb XpoqFe")
 
-        if answer is not None:
-
-            output_file.write(f"{i + 1}) {question}\n{answer.text}\n\n")
-
-        else:
-
+        if answer is None:
             answer = soup.find("span", class_="aCOpRe").span
 
-            output_file.write(f"{i + 1}) {question}\n{answer.text}\n\n")
+        output["answers"].append(answer.text)
+
+    df = pd.DataFrame(output)
+
+    df.to_json("answers.json", orient="index")
 
     done = Label(text="Arquivo gerado!")
     done.pack()
-    output_file.close()
 
 
 root = Tk()
