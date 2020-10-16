@@ -34,7 +34,7 @@ def UploadAction(event=None):
             question_number_regex, "", question.replace("\n", ""), 1
         )
 
-        output["questions"].append(question_without_number)
+        output["question"].append(question_without_number)
 
         url = f"https://www.google.com/search?q={urllib.parse.quote(question_without_number)}"
         req = session.get(url, headers=headers)
@@ -49,11 +49,11 @@ def UploadAction(event=None):
         if answer is None:
             answer = soup.find("span", class_="aCOpRe").span
 
-        output["answers"].append(answer.text)
+        output["answer"].append(answer.text)
 
     df = pd.DataFrame(output)
 
-    df.to_json("answers.json", orient="index")
+    df.to_json("answers.json", orient="index", indent=2, force_ascii=False)
 
     done = Label(text="Arquivo gerado!")
     done.pack()
