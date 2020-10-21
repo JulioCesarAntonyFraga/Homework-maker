@@ -17,4 +17,4 @@ dist
 .venv
 
 # Output
-answers.txt
+answers.json
